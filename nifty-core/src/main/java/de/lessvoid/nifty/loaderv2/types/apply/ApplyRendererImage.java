@@ -9,6 +9,7 @@ import de.lessvoid.nifty.render.NiftyRenderEngine;
 import de.lessvoid.nifty.render.image.ImageMode;
 import de.lessvoid.nifty.render.image.ImageModeHelper;
 import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.tools.SizeValue;
 import de.lessvoid.xml.xpp3.Attributes;
 
 public class ApplyRendererImage implements ApplyRenderer {
@@ -43,6 +44,8 @@ public class ApplyRendererImage implements ApplyRenderer {
       return;
     }
 
+    image.setColor(convert.color(attributes.get("color")));
+
 	String areaProviderProperty = ImageModeHelper.getAreaProviderProperty(attributes.getAttributes());
 	String renderStrategyProperty = ImageModeHelper.getRenderStrategyProperty(attributes.getAttributes());
     ImageMode imageMode = convert.imageMode(areaProviderProperty, renderStrategyProperty);
@@ -53,11 +56,12 @@ public class ApplyRendererImage implements ApplyRenderer {
     imageRenderer.setInset(convert.insetSizeValue(attributes.get("inset"), image.getHeight()));
 
     Size imageDimension = imageMode.getImageNativeSize(image);
-    if (element.getConstraintWidth() == null) {
-    	element.setConstraintWidth(convert.sizeValue(imageDimension.getWidth() + "px"));
+    
+    if (element.getConstraintWidth().hasDefault()) {
+      element.setConstraintWidth(SizeValue.def(imageDimension.getWidth()));
     }
-    if (element.getConstraintHeight() == null) {
-    	element.setConstraintHeight(convert.sizeValue(imageDimension.getHeight() + "px"));
+    if (element.getConstraintHeight().hasDefault()) {
+      element.setConstraintHeight(SizeValue.def(imageDimension.getHeight()));
     }
   }
 }
